@@ -1,56 +1,100 @@
 <template>
-    <div>
-      <!-- <div class="flex justify-center space-x-4 mb-8">
-        <button
-          @click="filterContent('movie')"
-          :class="{'bg-blue-500': activeFilter === 'movie', 'bg-gray-800': activeFilter !== 'movie'}"
-          class="text-white py-2 px-4 rounded"
-        >
-          Películas
-        </button>
-        <button
-          @click="filterContent('series')"
-          :class="{'bg-blue-500': activeFilter === 'series', 'bg-gray-800': activeFilter !== 'series'}"
-          class="text-white py-2 px-4 rounded"
-        >
-          Series
-        </button>
-      </div> -->
-      <div class="carousel grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-        <div
+  <div class="carousel-container relative">
+    <!-- Contenedor principal con overflow para permitir scroll -->
+    <div class="carousel-content flex flex-col gap-4 overflow-y-auto h-80 pt-10 pb-10">
+      
+      <!-- Flecha arriba -->
+      <button
+        @click="scrollUp"
+        class="absolute top-0  left-1/2 transform -translate-x-1/2  text-white rounded-full p-2 shadow-md"
+      >
+        <span v-html="Up"></span>
+      </button>
+
+      <!-- Tarjetas del carrusel -->
+      <div class="flex flex-col gap-4">
+        <Card
           v-for="item in filteredContent"
           :key="item.id"
-          class="content-card  bg-gray-800 text-white rounded-lg overflow-hidden shadow-lg"
-        >
-          <img :src="item.poster" :alt="item.title" class="object-cover w-52 h-52 " />
-          <div class="p-4">
-            <h2 class="text-lg font-bold">{{ item.title }}</h2>
-            <p class="text-sm text-gray-400">{{ item.genre }} - {{ item.year }}</p>
-          </div>
-        </div>
+          :title="item.title"
+          :genre="item.genre"
+          :year="item.year"
+          :qualification="item.qualification"
+          :description="item.description"
+          :poster="item.poster"
+          @click="selectMovie(item)" 
+        />
       </div>
+
+      <!-- Flecha abajo -->
+      <button
+        @click="scrollDown"
+        class="absolute bottom-0 left-1/2 transform -translate-x-1/2 text-white rounded-full p-2 shadow-md"
+      >
+      <span v-html="Down"></span>
+      </button>
     </div>
-  </template>
-  
-  <script setup>
-  import content from '../data/content.js';
-  import { ref } from 'vue';
-  
-  const activeFilter = ref('movie'); 
-  const filteredContent = ref(content); 
-  
-  const filterContent = (type) => {
-    activeFilter.value = type;
-    filteredContent.value = content.filter(item => item.type === type);
-  };
-  </script>
-  
-  <style scoped>
-  .content-card img {
-    transition: transform 0.3s;
-  }
-  .content-card:hover img {
-    transform: scale(1.05);
-  }
-  </style>
-  
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+import content from '../data/content.js';
+import Card from './Card.vue';
+import { Down, Up } from '../assets/iconos.js'; // Importar los íconos
+
+const emit = defineEmits();
+const activeFilter = ref('movie'); 
+const filteredContent = ref(content);
+
+const filterContent = (type) => {
+  activeFilter.value = type;
+  filteredContent.value = content.filter(item => item.type === type);
+};
+
+// Método que emite el evento con la película seleccionada
+const selectMovie = (movie) => {
+  emit('movie-clicked', movie);  // Emite el evento con los datos de la película
+};
+
+// Método para hacer scroll hacia arriba
+const scrollUp = () => {
+  const container = document.querySelector('.carousel-content');
+  container.scrollBy({ top: -100, behavior: 'smooth' });
+};
+
+// Método para hacer scroll hacia abajo
+const scrollDown = () => {
+  const container = document.querySelector('.carousel-content');
+  container.scrollBy({ top: 100, behavior: 'smooth' });
+};
+</script>
+
+<style scoped>
+.carousel-container {
+  position: relative;
+}
+
+.carousel-content {
+  overflow-y: auto; /* Permite el desplazamiento */
+  max-height: 80vh; /* Ajusta la altura máxima del contenedor */
+}
+
+/* Oculta la barra de desplazamiento */
+.carousel-content::-webkit-scrollbar {
+  display: none;
+}
+
+button {
+  z-index: 10;
+}
+
+button:hover {
+  background-color: #4a4a4a;
+}
+
+/* Asegura que las tarjetas tengan suficiente espacio y no se encojan demasiado */
+.content-card {
+  min-height: 200px;  /* Ajusta la altura mínima de las tarjetas */
+}
+</style>

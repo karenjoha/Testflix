@@ -1,15 +1,12 @@
-/** @type {import('tailwindcss').Config} */
-
-export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+module.exports = {
+  content: [
+    './index.html',          // Archivo principal de HTML
+    './src/**/*.{vue,js,ts}', // Archivos Vue, JavaScript o TypeScript en la carpeta src
+  ],
   theme: {
     extend: {
-      fontFamily: {
-        sans: ["Balsamiq Sans", "sans-serif"],
-        serif: ["IBM Plex Serif", "serif"],
-      },
-      colors:{
-        roseColor: 'rgb(252,115,113)'
+      colors: {
+        primary: "#D1A2FF"
       }
     },
   },

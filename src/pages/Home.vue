@@ -1,11 +1,12 @@
 <template>
-    <div>
+    <div >
+      <Navbar></Navbar>
       <HeroBanner />
-      <!-- <Carousel title="Nuevos Lanzamientos" :items="newReleases" /> -->
     </div>
   </template>
   
   <script setup>
   import HeroBanner from '../components/HeroBanner.vue';
+  import Navbar from '../components/Navbar.vue';
   </script>
   
