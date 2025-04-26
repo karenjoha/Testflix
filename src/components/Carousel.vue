@@ -41,7 +41,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import content from '../data/content.js';
+import content from '../data/Content.js';
 import Card from './Card.vue';
 import { Down, Up } from '../assets/iconos.js';
 
