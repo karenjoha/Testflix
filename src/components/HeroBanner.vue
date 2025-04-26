@@ -25,7 +25,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import content from '../data/content.js';
+import content from '../data/Content.js';
 import Carousel from '../components/Carousel.vue';
 
 const heroImage = ref(content[6].poster);
