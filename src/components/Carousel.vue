@@ -2,28 +2,30 @@
   <div class="carousel-container relative">
     <!-- Contenedor principal con overflow para permitir scroll -->
     <div class="carousel-content flex flex-col gap-4 overflow-y-auto h-80 pt-10 pb-10">
-      
       <!-- Flecha arriba -->
       <button
         @click="scrollUp"
-        class="absolute top-0  left-1/2 transform -translate-x-1/2  text-white rounded-full p-2 shadow-md"
+        class="absolute top-0  left-1/2 transform -translate-x-1/2 text-white rounded-full p-2 shadow-md"
       >
         <span v-html="Up"></span>
       </button>
 
       <!-- Tarjetas del carrusel -->
       <div class="flex flex-col gap-4">
-        <Card
-          v-for="item in filteredContent"
+        <div 
+          v-for="item in filteredContent" 
           :key="item.id"
-          :title="item.title"
-          :genre="item.genre"
-          :year="item.year"
-          :qualification="item.qualification"
-          :description="item.description"
-          :poster="item.poster"
-          @click="selectMovie(item)" 
-        />
+          @click="selectMovie(item)"
+        >
+          <Card
+            :title="item.title"
+            :genre="item.genre"
+            :year="item.year"
+            :qualification="item.qualification"
+            :description="item.description"
+            :poster="item.poster"
+          />
+        </div>
       </div>
 
       <!-- Flecha abajo -->
@@ -38,32 +40,40 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed } from 'vue';
 import content from '../data/content.js';
 import Card from './Card.vue';
-import { Down, Up } from '../assets/iconos.js'; // Importar los íconos
+import { Down, Up } from '../assets/iconos.js';
+
+const props = defineProps({
+  filter: {
+    type: String,
+    default: 'all'
+  }
+});
 
 const emit = defineEmits();
-const activeFilter = ref('movie'); 
-const filteredContent = ref(content);
 
-const filterContent = (type) => {
-  activeFilter.value = type;
-  filteredContent.value = content.filter(item => item.type === type);
-};
+// Computamos el contenido filtrado basado en el filtro que viene de props
+const filteredContent = computed(() => {
+  if (props.filter === 'recientemente') {
+    return [...content].sort((a, b) => b.year - a.year);
+  } else if (props.filter === 'all') {
+    return content;
+  } else {
+    return content.filter(item => item.type === props.filter);
+  }
+});
 
-// Método que emite el evento con la película seleccionada
 const selectMovie = (movie) => {
-  emit('movie-clicked', movie);  // Emite el evento con los datos de la película
+  emit('movie-clicked', movie);
 };
 
-// Método para hacer scroll hacia arriba
 const scrollUp = () => {
   const container = document.querySelector('.carousel-content');
   container.scrollBy({ top: -100, behavior: 'smooth' });
 };
 
-// Método para hacer scroll hacia abajo
 const scrollDown = () => {
   const container = document.querySelector('.carousel-content');
   container.scrollBy({ top: 100, behavior: 'smooth' });

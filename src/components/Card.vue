@@ -1,5 +1,12 @@
 <template>
-    <div class="content-card bg-gray-800 text-white rounded-lg overflow-hidden shadow-lg relative group">
+    <div
+      class="content-card bg-gray-800 text-white rounded-lg overflow-hidden shadow-lg relative group"
+      @mouseover="showInfo"
+      @mouseleave="hideInfo"
+      @touchstart="handleTouchStart"
+      @touchend="handleTouchEnd"
+      @touchcancel="handleTouchEnd"
+    >
         <span v-html="Play" class="absolute inset-0 flex items-center justify-center w-2"></span>
         <!-- Imagen de fondo -->
         <img :src="poster" :alt="title" class="object-cover w-full h-64 transition-all duration-300" />
@@ -9,7 +16,13 @@
         <h2 class="text-lg font-bold text-center">{{ title }}</h2>
         </div>
         <!-- Información adicional -->
-        <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div 
+          class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent transition-opacity duration-300"
+          :class="{
+            'opacity-100': infoVisible, 
+            'opacity-0': !infoVisible
+          }"
+          >
         <div class="bg-gray-800 bg-opacity-80 p-4 rounded-t-lg">
             <div class="items-end">
             <!-- list -->
@@ -29,7 +42,7 @@
             <span v-html="LikeHover" v-else @click="toggleIconLike"></span>
           </div>
 
-          <p class="text-sm text-white mt-2">{{ description }}</p>
+          <p class="text-sm text-white mt-2 h-16 overflow-y-auto">{{ description }}</p>
           <div class="flex justify-between text-sm mt-2">
             <span class="flex items-center">{{ qualification }}
               <span v-html="Start"></span>
@@ -41,29 +54,46 @@
     </div>
   </template>
   
-  <script setup>
-  import { ref } from 'vue';
-  import { Play , Start, Like, LikeHover, List, ListHover} from '../assets/iconos.js';
-  defineProps({
-    title: String,
-    genre: String,
-    year: String,
-    poster: String,
-    description: String,
-    qualification: String,
-  });
-  const isIconClickedList = ref(true);
-  const isIconClickedLike = ref(true);
+<script setup>
+import { ref } from 'vue';
+import { Play, Start, Like, LikeHover, List, ListHover } from '../assets/iconos.js';
 
-  const toggleIconList = () => {
-    isIconClickedList.value = !isIconClickedList.value;
+defineProps({
+  title: String,
+  genre: String,
+  year: String,
+  poster: String,
+  description: String,
+  qualification: String,
+});
+
+const isIconClickedList = ref(true);
+const isIconClickedLike = ref(true);
+
+// << NUEVO >>
+const infoVisible = ref(false);
+let touchTimer = null;
+
+const showInfo = () => {
+  infoVisible.value = true;
 };
-const toggleIconLike = () => {
-      isIconClickedLike.value = !isIconClickedLike.value;
-  }
-  </script>
+
+const hideInfo = () => {
+  infoVisible.value = false;
+};
+
+const handleTouchStart = () => {
+  touchTimer = setTimeout(() => {
+    showInfo();
+  }, 400); // 400ms para "long press"
+};
+
+const handleTouchEnd = () => {
+  clearTimeout(touchTimer);
+};
+</script>
   
-  <style scoped>
+<style scoped>
   .content-card {
     position: relative;
     width: 100%;
@@ -96,5 +126,5 @@ const toggleIconLike = () => {
     }
     
 
-  </style>
+</style>
   

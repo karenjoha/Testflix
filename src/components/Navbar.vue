@@ -1,13 +1,13 @@
 <template>
     <div class="flex justify-between p-4 absolute w-full">
-      <h2 class="text-primary">TESTFLIX</h2>
+      <h2 class="text-primary text-3xl p-4">TESTFLIX</h2>
       <div class="flex">
         <!-- Botón para abrir el modal -->
-        <div @click="openModal" class="cursor-pointer flex items-center">
+        <!-- <div @click="openModal" class="cursor-pointer flex items-center">
             <span v-html="Agregar"></span>
             <span class="text-white">Agregar pelicula</span>
         </div>
-  
+   -->
         <!-- Menú lateral y notificaciones -->
         <div class="flex items-center space-x-4">
             <span v-html="Menu"></span>
@@ -17,7 +17,7 @@
           <span v-html="Notification"></span>
           <!-- Foto de perfil -->
 
-          <img src="../../public/images/Perfil.png" alt="Perfil">
+          <img src="/images/Perfil.png" alt="Perfil">
         </div>
       </div>
   
@@ -33,7 +33,7 @@
   import { ref } from 'vue';
   import Modal from './Modal.vue';
   import Sidebar from './Sidebar.vue';
-  import { Agregar, Menu, Notification } from '../assets/iconos.js'; // Importar los íconos
+  import { Agregar, Menu, Notification } from '../assets/iconos.js'; 
 
   const isModalOpen = ref(false);
   const isSidebarOpen = ref(false);
@@ -50,6 +50,5 @@
   </script>
   
   <style scoped>
-  /* Puedes agregar aquí estilos para tu navbar si los necesitas */
   </style>
   

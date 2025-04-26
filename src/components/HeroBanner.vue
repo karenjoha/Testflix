@@ -1,37 +1,51 @@
 <template>
-    <div
-      class="hero-banner md:flex bg-cover bg-center h-screen block items-center justify-center text-white"
-      :style="{ backgroundImage: 'url(' + heroImage + ')' }"
-    >
-        <div class="text-left">
-          <span class="text-1xl">ORIGINAL DE TESTFLIX</span>
-            <h3 class="text-5xl text-primary font-bold">{{ heroTitle }}</h3>
-            <button>REPRODUCIR</button>
-            <button>MI LISTA</button>
-        </div>
-        <div>
-          <div class="flex items-center custom-select">
-            <span>VER:</span>
-            <select class="bg-transparent text-primary p-2 rounded">
-              <option value="tendencias">TENDENCIAS</option>
-              <option value="misPeliculas">MIS PELICULAS</option>
-              <option value="recientemente">AGREGADO RECIENTEMENTE</option>
-            </select>
-          </div>
-          <Carousel/>
-        </div>
-
+  <div
+    class="hero-banner md:flex content-center bg-cover bg-top h-screen block items-center justify-center text-white"
+    :style="{ backgroundImage: 'url(' + heroImage + ')' }"
+  >
+    <div class="text-left">
+      <span class="text-1xl">ORIGINAL DE TESTFLIX</span>
+      <h3 class="text-5xl text-primary font-bold">{{ heroTitle }}</h3>
     </div>
-  </template>
-  
-  <script setup>
-  import content from '../data/content.js'; // Importamos la data de películas y series
-  import Carousel from '../components/Carousel.vue';
+    <div>
+      <div class="flex items-center custom-select">
+        <span>VER:</span>
+        <select class="bg-transparent text-primary p-2 rounded" @change="filterContent($event)">
+          <option value="all">TODAS</option>
+          <option value="movie">PELICULAS</option>
+          <option value="series">SERIES</option>
+          <option value="recientemente">AGREGADO RECIENTEMENTE</option>
+        </select>
+      </div>
 
-  const heroImage = content[6].poster; // Usamos el póster de la primera película o serie
-  const heroTitle = content[6].title; // Usamos el título de la primera película o serie
-  </script>
-  
+      <Carousel :filter="activeFilter" @movie-clicked="updateHero" />
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+import content from '../data/content.js';
+import Carousel from '../components/Carousel.vue';
+
+const heroImage = ref(content[6].poster);
+const heroTitle = ref(content[6].title);
+
+// Filtro activo
+const activeFilter = ref('all');
+
+// Función que filtra el contenido en base a la opción seleccionada
+const filterContent = (event) => {
+  activeFilter.value = event.target.value;
+};
+
+const updateHero = (movie) => {
+  heroImage.value = movie.poster;
+  heroTitle.value = movie.title;
+};
+</script>
+
+
   <style scoped>
   .hero-banner {
     justify-content: space-between;
